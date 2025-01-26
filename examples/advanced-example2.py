@@ -6,24 +6,37 @@ from pybud.widgets import TextBox, Label, ComboBox, VerticalMultipleChoice
 class Main(Window):
     def __init__(self):
         super().__init__(
-            size = (76, 13),
+            size = (76, 14),
             position = (0, 0),
-            title = "PyBUD: GUI Beauty" # AStr("PyBUD: GUI Beauty", fore = (20, 250, 120))
+            has_border = False,
+            opacity = 1.0,
+            title = "PyBUD: GUI Beauty"
         )
-        #title.add_graphics(AnsiGraphicMode.BOLD | AnsiGraphicMode.UNDERLINE)
-
-        caption = "A python library for creating beautiful GUIs in console, with tons of diffrent components, such as Dialogs, Widgets, Drawables, ansi color optimizations written in Rust, and more!"
         
+        title = ansi.AnsiString("PyBUD: GUI Beauty", fore = (20, 250, 120))
+        title.add_graphics(ansi.AnsiGraphicMode.BOLD | ansi.AnsiGraphicMode.UNDERLINE)
+        
+        title = ansi.AnsiString("[ ") + title + ansi.AnsiString(" ]")
+
         self.add_widget(Label(
-            ansi.AnsiString(caption, fore=(150, 250, 50)),
+            title,
             centered = True,
             size = (self.size.width - 4, 1),  # height will be owerwritten in WidgetLabel
             position = (2, 1),
         ))
+        
+        caption = "A python library for creating beautiful GUIs in console, with tons of diffrent components, such as Dialogs, Widgets, Drawables, ansi color optimizations written in Rust, and more!"
+        
+        self.add_widget(Label(
+            caption,
+            centered = True,
+            size = (self.size.width - 4, 1),  # height will be owerwritten in WidgetLabel
+            position = (2, 2),
+        ))
         self.add_widget(TextBox(
             "TextBox: ",
             size = (self.size.width//2 - 4, 1),  # height will be owerwritten in WidgetLabel
-            position = (2, 5),
+            position = (2, 6),
         ))
         self.add_widget(ComboBox(
             "ComboBox: ",
@@ -34,7 +47,7 @@ class Main(Window):
                 "Briliant!": self.briliant_option,
             },
             size = (self.size.width//2 - 4, 1),  # height will be owerwritten in WidgetLabel
-            position = (self.size.width//2 + 2, 5),
+            position = (self.size.width//2 + 2, 6),
         ))
         self.add_widget(VerticalMultipleChoice(
             "VerticalMultipleChoice:",
@@ -46,7 +59,7 @@ class Main(Window):
                 "Briliant!": self.briliant_option,
             },
             size = (self.size.width-4, 1),  # height will be owerwritten in WidgetOptions
-            position = (2, 7),
+            position = (2, 8),
         ))
         self.add_widget(Label(
             ansi.AnsiString("Tip: ", fore = (255, 128, 0)) +
@@ -54,14 +67,14 @@ class Main(Window):
             ansi.AnsiString("Ctrl + C", fore = (255, 128, 0)) + ansi.AnsiString(" to exit the demo."),
             centered = True,
             size = (self.size.width - 26, 1),  # height will be owerwritten in WidgetLabel
-            position = (22, 8),
+            position = (22, 9),
             name = "tip-label"
         ))
         self.lbl_result = Label(
             "",
             centered = True,
             size = (self.size.width - 4, 1),  # height will be owerwritten in WidgetLabel
-            position = (2, 11),
+            position = (2, 12),
             name = "result-label"
         )
         self.add_widget(self.lbl_result)
@@ -87,7 +100,7 @@ if __name__ == "__main__":
     # define `Session` size and `Session` background, you can think of 
     # a session as the screen display that shows the `Window`s on it.
     main_window = Main()
-    s = Session((76, 13), background=(90, 110, 220))
+    s = Session((76, 14), background=(90, 110, 220))
     s.add_window(main_window)
     s.show()
 
