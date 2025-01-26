@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pybud-gui"
-version = "2.1.0"
+version = "3.0.0"
 
 dependencies = [
   "readchar",
 ]
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 authors = [
-  {name = "Amirali Mollaei", email = "aam.products.mail@gmail.com"},
+  {name = "Amirali Mollaei", email = "me.amiralimollaei@gmail.com"},
 ]
 description = "Create beautiful console GUIs in python, using Widgets, Dialogs, and more!"
 license = {text = "BSD 4-clause License"}

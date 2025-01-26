@@ -13,7 +13,7 @@ pub struct AnsiColor(pub u8, pub u8, pub u8);
 fn calc_legacy_color(c: u8) -> u8 {
     /* 
     legacy colors have an estimated range from about 48 to 236, 
-    this function translates a single color to legacy base 6
+    this function translates a single color to a legacy color of base 6
     */
 
     // const K: f32 = 5.0 / 187.0; // constant ratio
@@ -39,7 +39,7 @@ impl AnsiColor {
         let r = calc_legacy_color(self.0);
         let g = calc_legacy_color(self.1);
         let b = calc_legacy_color(self.2);
-        let color_code = r * 36 + g * 6 + b + 16;
+        let color_code = 16 + (r * 36) + (g * 6) + b;
 
         format!("\x1b[{};5;{}m", Self::get_ground_code(ground), color_code)
     }
@@ -65,14 +65,14 @@ impl AnsiColor {
     }
 }
 
-#[pyclass]
-#[derive(Clone, Copy)]
+#[pyclass(eq, eq_int)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum ColorGround {
     BACK,
     FORE
 }
-#[pyclass]
-#[derive(Clone, Copy)]
+#[pyclass(eq, eq_int)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum ColorMode {
     LIMITED,
     TRUECOLOR

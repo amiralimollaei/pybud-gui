@@ -54,11 +54,12 @@ impl AnsiString {
 #[pymethods]
 impl AnsiString {
     #[new]
+    #[pyo3(signature = (s, fore=None, back=None))]
     #[inline]
-    pub fn new(str: &str, fore: Option<(u8, u8, u8)>, back: Option<(u8, u8, u8)>) -> Self {
-        let mut vec: Vec<AnsiChar> = Vec::with_capacity(str.len());
+    pub fn new(s: &str, fore: Option<(u8, u8, u8)>, back: Option<(u8, u8, u8)>) -> Self {
+        let mut vec: Vec<AnsiChar> = Vec::with_capacity(s.len());
     
-        for c in str.chars() {
+        for c in s.chars() {
             vec.push(AnsiChar::new(c, fore, back));
         }
 
@@ -67,6 +68,9 @@ impl AnsiString {
 
     // optimized to_string
     pub fn to_string(&self, mode: &ColorMode) -> String {
+        if self.vec.len() == 0 {
+            return String::new();
+        }
         // add the first character unoptimized
         let mut _string = self.vec[0].to_string(mode);
 
@@ -93,11 +97,10 @@ impl AnsiString {
             if (pbc != cbc) || (pfc != cfc) {
                 // reset ansi
                 _string.push_str(ANSIRESET);
-                /*// reset background
+                /* to reset background and foreground sperately:
                 _string.push_str(RESET_BACKGROUND);
-                // reset foreground
                 _string.push_str(RESET_FOREGROUND);*/
-                
+
                 // set background if exists
                 _string.push_str(match cbc {
                     None => {String::new()},

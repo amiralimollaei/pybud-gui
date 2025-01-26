@@ -21,10 +21,11 @@ pub struct AnsiChar {
 #[pymethods]
 impl AnsiChar {
     #[new]
+    #[pyo3(signature = (c, fore=None, back=None))]
     #[inline]
-    pub fn new(char: char, fore: Option<(u8, u8, u8)>, back: Option<(u8, u8, u8)>) -> AnsiChar {
+    pub fn new(c: char, fore: Option<(u8, u8, u8)>, back: Option<(u8, u8, u8)>) -> AnsiChar {
         Self {
-            char: char,
+            char: c,
             back_color: match back {
                 Some(back) => Some(AnsiColor(back.0, back.1, back.2)),
                 None => {None}

@@ -5,7 +5,7 @@ AnsiGraphics = ansi.AnsiGraphics
 AnsiChar = ansi.AnsiChar
 AnsiString = ansi.AnsiString
 
-# this ugly, but we can't do nothing about it
+# this ugly, but I can't do nothing about it
 class AnsiGraphicMode:
     BOLD = AnsiGraphics._from_bits(0b00000001)
     FAINT = AnsiGraphics._from_bits(0b00000010)
