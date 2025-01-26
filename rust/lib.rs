@@ -10,7 +10,7 @@ use ansi::string::AnsiString;
 
 #[pyfunction]
 fn test_render() -> String {
-    let mut drawer = Drawer::new((9, 60), None);
+    let mut drawer = Drawer::new(9, 60, None);
     
     let mut astr_title = AnsiString::new_fore( "Rust Drawer", (0, 255, 0));
     astr_title.add_graphics(AnsiGraphics::BOLD | AnsiGraphics::UNDERLINE);
@@ -26,9 +26,9 @@ fn test_render() -> String {
 }
 
 #[pyfunction]
-fn test_render_100k() -> Duration{
+fn render_benchmark() -> Duration {
     let now = Instant::now();
-    for _ in 0..100000 {
+    for _ in 0..1000000 {
         test_render();
     }
     now.elapsed()
@@ -41,22 +41,24 @@ fn test_render_100k() -> Duration{
 #[pymodule]
 fn _drawer(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
-    m.add_function(wrap_pyfunction!(test_render, m)?)?;
-    m.add_function(wrap_pyfunction!(test_render_100k, m)?)?;
+    m.add_class::<Drawer>()?;
 
-    let color_module = PyModule::new_bound(m.py(), "color")?;
+    m.add_function(wrap_pyfunction!(test_render, m)?)?;
+    m.add_function(wrap_pyfunction!(render_benchmark, m)?)?;
+
+    let color_module = PyModule::new(m.py(), "color")?;
     color_module.add_class::<ColorMode>()?;
     color_module.add_class::<ColorGround>()?;
     color_module.add_class::<AnsiColor>()?;
 
-    let ansi_module = PyModule::new_bound(m.py(), "ansi")?;
+    m.add_submodule(&color_module).expect("Error on add_submodule! (color)");
+
+    let ansi_module = PyModule::new(m.py(), "ansi")?;
     ansi_module.add_class::<AnsiGraphics>()?;
     ansi_module.add_class::<AnsiChar>()?;
     ansi_module.add_class::<AnsiString>()?;
 
-    m.add_class::<Drawer>()?;
     m.add_submodule(&ansi_module).expect("Error on add_submodule! (ansi)");
-    m.add_submodule(&color_module).expect("Error on add_submodule! (color)");
 
     Ok(())
 }

@@ -12,24 +12,18 @@ jobs:
     name:  ${{ matrix.python-version }} ${{ matrix.platform.os }}-${{ matrix.platform.python-architecture }}
     runs-on: ${{ matrix.platform.os }}
     strategy:
-      # If one platform fails, allow the rest to keep testing
+      # If one platform fails, allow the rest to keep working
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", pypy-3.9, pypy-3.10]
+        python-version: ["3.10", "3.11", "3.12", "3.13", pypy-3.10, pypy-3.11]
         platform: [
+          { os: "macos-latest", python-architecture: "x64", rust-target: "x86_64-apple-darwin" },
           { os: "macos-latest", python-architecture: "arm64", rust-target: "aarch64-apple-darwin" },
           { os: "ubuntu-latest", python-architecture: "x64", rust-target: "x86_64-unknown-linux-gnu" },
           { os: "windows-latest", python-architecture: "x64", rust-target: "x86_64-pc-windows-msvc" },
           { os: "windows-latest", python-architecture: "x86", rust-target: "i686-pc-windows-msvc" },
+          { os: "windows-latest", python-architecture: "arm64", rust-target: "aarch64-pc-windows-mscc" },
         ]
-        include:
-          # Just test one x64 macOS Python for simplicity
-          - python-version: 3.12
-            platform: { os: "macos-13", python-architecture: "x64", rust-target: "x86_64-apple-darwin" }
-        exclude:
-          # macOS arm doesn't have Python builds before 3.10
-          - python-version: 3.9
-            platform: { os: "macos-latest", python-architecture: "arm64", rust-target: "aarch64-apple-darwin" }
 
     steps:
       - uses: actions/checkout@v4
@@ -71,24 +65,18 @@ jobs:
   pypi-publish:
     runs-on: ubuntu-latest
     strategy:
-      # If one platform fails, allow the rest to keep testing
+      # If one platform fails, allow the rest to keep working
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", pypy-3.9, pypy-3.10]
+        python-version: ["3.10", "3.11", "3.12", "3.13", pypy-3.10, pypy-3.11]
         platform: [
+          { os: "macos-latest", python-architecture: "x64", rust-target: "x86_64-apple-darwin" },
           { os: "macos-latest", python-architecture: "arm64", rust-target: "aarch64-apple-darwin" },
           { os: "ubuntu-latest", python-architecture: "x64", rust-target: "x86_64-unknown-linux-gnu" },
           { os: "windows-latest", python-architecture: "x64", rust-target: "x86_64-pc-windows-msvc" },
           { os: "windows-latest", python-architecture: "x86", rust-target: "i686-pc-windows-msvc" },
+          { os: "windows-latest", python-architecture: "arm64", rust-target: "aarch64-pc-windows-mscc" },
         ]
-        include:
-          # Just test one x64 macOS Python for simplicity
-          - python-version: 3.12
-            platform: { os: "macos-13", python-architecture: "x64", rust-target: "x86_64-apple-darwin" }
-        exclude:
-          # macOS arm doesn't have Python builds before 3.10
-          - python-version: 3.9
-            platform: { os: "macos-latest", python-architecture: "arm64", rust-target: "aarch64-apple-darwin" }
 
     needs:
       - release-build

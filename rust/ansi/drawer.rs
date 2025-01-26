@@ -17,10 +17,16 @@ pub struct Drawer {
     size: Size,
     #[pyo3(get, set)]
     plane: Vec<AnsiString>,
+    #[pyo3(get, set)]
+    plane_color: Option<(u8, u8, u8)>,
 }
 
 fn get_string_with_len(len: usize) -> String {
     " ".repeat(len).to_string()
+}
+
+fn get_char_with_len(char: char, len: usize) -> String {
+    char.to_string().repeat(len).to_string()
 }
 
 // non-python methods
@@ -32,27 +38,42 @@ impl Drawer {
     }
 }
 
+fn make_empty_plane(height: usize, width: usize, color: Option<(u8, u8, u8)>) ->  Vec<AnsiString> {
+    let mut plane: Vec<AnsiString> = Vec::with_capacity(height);
+    for _ in 0..height {
+        let blank_str = get_string_with_len(width);
+        plane.push(match color {
+            None => {AnsiString::new_colorless(blank_str.as_str())}
+            Some(color) => {AnsiString::new_back(blank_str.as_str(), color)}
+        });
+    }
+    plane
+}
+
 // python methods
 #[pymethods]
 impl Drawer {
     #[new]
+    #[pyo3(signature = (width, height, plane_color=None))]
     #[inline]
-    pub fn new(size: (usize, usize), plane_color: Option<(u8, u8, u8)>) -> Drawer {
-        let mut plane: Vec<AnsiString> = Vec::with_capacity(size.0);
-        for _ in 0..size.0 {
-            plane.push(match plane_color {
-                None => {AnsiString::new_colorless(get_string_with_len(size.1).as_str())}
-                Some(color) => {AnsiString::new_back(get_string_with_len(size.1).as_str(), color)}
-            });
-        }
-        
+    pub fn new(width: usize, height: usize, plane_color: Option<(u8, u8, u8)>) -> Drawer {
         Drawer {
             size: Size {
-                height: size.0,
-                width: size.1
+                width: width,
+                height: height,
             },
-            plane: plane
+            plane: make_empty_plane(height, width, plane_color),
+            plane_color: plane_color
         }
+    }
+
+    #[pyo3(signature = (color=None))]
+    pub fn fill(&mut self, color: Option<(u8, u8, u8)>) {
+        self.plane = make_empty_plane(self.size.height, self.size.width, color)
+    }
+
+    pub fn clear(&mut self) {
+        self.plane = make_empty_plane(self.size.height, self.size.width, self.plane_color)
     }
 
     pub fn render(&self, mode: &ColorMode) -> String {
@@ -113,10 +134,12 @@ impl Drawer {
         self.place_str(str, (ypos, xpos));
     }
 
-    pub fn place_drawer(&mut self, other: &Self, pos: (usize, usize), border: bool) {
+    pub fn place_drawer(&mut self, other: &Self, pos: (usize, usize), opacity: f32, border: bool, title: String) {
         if self.check_write_position(pos) {
             return
         }
+
+        let mut other_mod = other.clone();
 
         for i in pos.0..self.size.height {
             // reletive height
@@ -126,27 +149,44 @@ impl Drawer {
                 break;
             }
 
-            if border {
-                // other.plane's reletive line
-                let mut otprl = other.plane[rh].clone();
+            // other.plane's reletive line
+            let otprl = &mut other_mod.plane[rh];
 
-                for i in 0..other.size.width{
+            if opacity != 1.0 {
+                for i in 0..other_mod.size.width {
                     match otprl.vec[i].back_color {
                         None => {},
                         Some(bc) => {
                             otprl.vec[i].back_color = Some(AnsiColor {
-                            0: (bc.0 as f32 * 0.9) as u8,
-                            1: (bc.1 as f32 * 0.9) as u8,
-                            2: (bc.2 as f32 * 0.9) as u8,
+                            0: (bc.0 as f32 * opacity) as u8,
+                            1: (bc.1 as f32 * opacity) as u8,
+                            2: (bc.2 as f32 * opacity) as u8,
                             });}
                     }
                 }
-
-                self.plane[i].place(&otprl, pos.1, false);
-                
-            } else {
-                self.plane[i].place(&other.plane[rh], pos.1, false);
             }
+
+            if border {
+                if rh == 0 {
+                    let topbar_formatted = format!(
+                        "┌┤{}├{}┐",
+                        title,
+                        get_char_with_len('─', other.size.width - title.len() -4)
+                    );
+                    otprl.place_str(topbar_formatted.as_str(), 0);
+                } else if rh == (other.size.height - 1) {
+                    let bottombar_formatted = format!(
+                        "└{}┘",
+                        get_char_with_len('─', other.size.width - 2)
+                    );
+                    otprl.place_str(bottombar_formatted.as_str(), 0);
+                } else {
+                    otprl.place_str("│", 0);
+                    otprl.place_str("│", otprl.len()-1);
+                }
+            }
+
+            self.plane[i].place(&otprl, pos.1, false);
             
         }
     }

@@ -1,106 +1,106 @@
-from pybud.drawer.ansi import AnsiGraphicMode
-from pybud.drawer.ansi import AnsiString as AStr
-from pybud.drawer.color import ColorMode
+from pybud.drawer import ansi
+from pybud.session import Session
+from pybud.window import Window
+from pybud.widgets import TextBox, Label, ComboBox, VerticalMultipleChoice
 
-from pybud.gui.dialog import AutoDialog, DialogBase
-from pybud.gui.widgets import WidgetInput, WidgetLabel, WidgetOptions
+class Main(Window):
+    def __init__(self):
+        super().__init__(
+            size = (76, 13),
+            position = (0, 0),
+            title = "PyBUD: GUI Beauty" # AStr("PyBUD: GUI Beauty", fore = (20, 250, 120))
+        )
+        #title.add_graphics(AnsiGraphicMode.BOLD | AnsiGraphicMode.UNDERLINE)
 
-def input_dialog(WIDTH=76):
-    """ the main dialog """
+        caption = "A python library for creating beautiful GUIs in console, with tons of diffrent components, such as Dialogs, Widgets, Drawables, ansi color optimizations written in Rust, and more!"
+        
+        self.add_widget(Label(
+            ansi.AnsiString(caption, fore=(150, 250, 50)),
+            centered = True,
+            size = (self.size.width - 4, 1),  # height will be owerwritten in WidgetLabel
+            position = (2, 1),
+        ))
+        self.add_widget(TextBox(
+            "TextBox: ",
+            size = (self.size.width//2 - 4, 1),  # height will be owerwritten in WidgetLabel
+            position = (2, 5),
+        ))
+        self.add_widget(ComboBox(
+            "ComboBox: ",
+            options = {
+                "Nice!": self.nice_option,
+                "Very Good!": self.verygood_option,
+                "Awesome!": self.awesome_option,
+                "Briliant!": self.briliant_option,
+            },
+            size = (self.size.width//2 - 4, 1),  # height will be owerwritten in WidgetLabel
+            position = (self.size.width//2 + 2, 5),
+        ))
+        self.add_widget(VerticalMultipleChoice(
+            "VerticalMultipleChoice:",
+            # the text and callback function for each option
+            options = {
+                "Nice!": self.nice_option,
+                "Very Good!": self.verygood_option,
+                "Awesome!": self.awesome_option,
+                "Briliant!": self.briliant_option,
+            },
+            size = (self.size.width-4, 1),  # height will be owerwritten in WidgetOptions
+            position = (2, 7),
+        ))
+        self.add_widget(Label(
+            ansi.AnsiString("Tip: ", fore = (255, 128, 0)) +
+            ansi.AnsiString("Use TAB or arrow keys to switch between Widgets, Use ") +
+            ansi.AnsiString("Ctrl + C", fore = (255, 128, 0)) + ansi.AnsiString(" to exit the demo."),
+            centered = True,
+            size = (self.size.width - 26, 1),  # height will be owerwritten in WidgetLabel
+            position = (22, 8),
+            name = "tip-label"
+        ))
+        self.lbl_result = Label(
+            "",
+            centered = True,
+            size = (self.size.width - 4, 1),  # height will be owerwritten in WidgetLabel
+            position = (2, 11),
+            name = "result-label"
+        )
+        self.add_widget(self.lbl_result)
 
-    title = AStr("PyBUD: GUI Beauty", fore = (20, 250, 120))
-    title.add_graphics(AnsiGraphicMode.BOLD | AnsiGraphicMode.UNDERLINE)
-    
-    title = AStr("[ ") + title + AStr(" ]")
-    caption = "A python library for creating beautiful GUIs in console, with tons of diffrent components, such as Dialogs, Widgets, Drawables, color optimization, and more!"
-    mydialog = AutoDialog(width=WIDTH, ctype=ColorMode.TRUECOLOR, background_color = (90, 110, 220))
+    def briliant_option(self):
+        self.lbl_result.text = "Briliant!"
 
-    mydialog.add_widget(WidgetLabel(
-        title,
-        size = [WIDTH, None],  # height will be owerwritten in WidgetLabel
-        pos = [0, 1],
-    ))
-    
-    mydialog.add_widget(WidgetLabel(
-        caption,
-        centered = True,
-        size = [WIDTH, None],  # height will be owerwritten in WidgetLabel
-        pos = [0, 2],
-        padding = 4
-    ))
+    def verygood_option(self):
+        self.lbl_result.text = "Very Good!"
 
-    mydialog.add_widget(WidgetInput(
-        "text input: ",
-        size = [WIDTH//2 - 4, None],  # height will be owerwritten in WidgetLabel
-        pos = [2, 6],
-    ))
-    mydialog.add_widget(WidgetInput(
-        "another text input: ",
-        size = [WIDTH//2 - 4, None],  # height will be owerwritten in WidgetLabel
-        pos = [WIDTH//2 + 2, 6],
-    ))
+    def nice_option(self):
+        self.lbl_result.text = "Nice!"
 
-    def briliant_option(self: DialogBase):
-        print("Briliant!         ", end="\r")
-        return "Briliant!"
-
-    def verycool_option(self: DialogBase):
-        print("Very Cool!        ", end="\r")
-        return "Very Cool!"
-
-    def nice_option(self: DialogBase):
-        print("Nice!             ", end="\r")
-        return "Nice!"
-
-    def awesome_option(self: DialogBase):
-        print("Awesome!          ", end="\r")
-        return "Awesome!"
-    # the text and callback function for each option
-    options = [
-        ("Nice!", nice_option),
-        ("Very Cool!", verycool_option),
-        ("Awesome!", awesome_option),
-        ("Briliant!", briliant_option),
-    ]
-    mydialog.add_widget(WidgetOptions(
-        options,
-        size = [WIDTH-4, None],  # height will be owerwritten in WidgetOptions
-        pos = [2, 8],
-    ))
-    mydialog.add_widget(WidgetLabel(
-        AStr("Tip: ", fore = (255, 128, 0)) +
-        AStr("you can use TAB or arrow keys to switch between selectable Widgets, use ") + AStr("Ctrl + C", fore = (255, 128, 0)) +
-        AStr(" or press enter on text inputs to exit."),
-        centered=True,
-        size = [WIDTH - 26, None],  # height will be owerwritten in WidgetLabel
-        pos = [22, 9],
-        name = "LastLabel"
-    ))
-    return mydialog
+    def awesome_option(self):
+        self.lbl_result.text = "Awesome!"
 
 
 if __name__ == "__main__":
     # only for windows users
     import pybud.drawer.ansi as ansi
     ansi.init()
+    
+    # define `Session` size and `Session` background, you can think of 
+    # a session as the screen display that shows the `Window`s on it.
+    main_window = Main()
+    s = Session((76, 13), background=(90, 110, 220))
+    s.add_window(main_window)
+    s.show()
 
-    mydialog = input_dialog()
-
-    #print dialog summery
-    #print(mydialog)
-
-    # mydialog.show()
-    text = mydialog.show()
-
-    print(f"result (last update return): \"{text}\"")
-
-    print(f"individual outputs:")
-    for i, w in enumerate(mydialog.widgets):
+    print(f"Session Closed! Widget Data:\n")
+    for i, w in enumerate(main_window._widgets):
         print(w.name + ":")
-        if isinstance(w, WidgetInput):
-            print(f"text written in textbox ({w.text}): ", w.input)
-        elif isinstance(w, WidgetOptions):
-            print("selected option id:", w.selected)
-            print("selected option text:", w.options[w.selected])
+        if isinstance(w, TextBox):
+            print(f"- text=\"{w.text}\", input=\"{w.input}\"")
+        elif isinstance(w, (VerticalMultipleChoice, ComboBox)):
+            print(f"- selected_option_id={w.selected_option_id}")
+            print(f"- selected option text=\"{list(w.options)[w.selected_option_id]}\"")
+        if isinstance(w, Label):
+            print(f"- text=\"{w.text}\"")
         else:
-            print("no output")
+            print("- no data")
+        print("")
