@@ -11,9 +11,9 @@ from pybud.drawer import ansi
 class Main(Window):
     def __init__(self):
         super().__init__(
-            size = (50, 9),
+            size = (100, 10),
             position = (0, 0),
-            title = "Colored Text Example",
+            title = "Widget Example",
         )
 
         # add a label widget, set text, width and position
@@ -21,7 +21,7 @@ class Main(Window):
             # define a ansi.AnsiString object that renders text with colors
             # you can set both forecolor and backcolor
             text = ansi.AnsiString("Hello world!", fore = (90, 250, 90)),
-            position = (19, 4),
+            position = (44, 4),
             size = (60, 1)
             )
         )
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     
     # define `Session` size and `Session` background, you can think of 
     # a session as the screen display that shows the `Window`s on it.
-    s = Session((50, 9), background=(100, 100, 250))
+    s = Session((100, 10), background=(100, 100, 250))
     s.add_window(Main())
     s.show()
     print("Closed!")

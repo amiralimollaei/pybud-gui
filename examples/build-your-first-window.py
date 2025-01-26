@@ -9,7 +9,7 @@ class Main(Window):
         super().__init__(
             size = (100, 10),
             position = (0, 0),
-            title = "Empty Window Example",
+            title = "Window Example",
         )
 
 if __name__ == "__main__":

@@ -1,21 +1,21 @@
 # PyBUD: Python Beauty
 
-[![CodeFactor](https://www.codefactor.io/repository/github/amirali1059/pybud-gui/badge)](https://www.codefactor.io/repository/github/amirali1059/pybud-gui) [![PyPI](https://img.shields.io/pypi/v/pybud-gui.svg)](https://pypi.org/project/pybud-gui/)
+[![CodeFactor](https://www.codefactor.io/repository/github/amiralimollaei/pybud-gui/badge)](https://www.codefactor.io/repository/github/amiralimollaei/pybud-gui) [![PyPI](https://img.shields.io/pypi/v/pybud-gui.svg)](https://pypi.org/project/pybud-gui/)
 
-**A python library for creating beautiful GUIs in console, with tons of different components, such as `Dialog`s, `Widget`s, `Drawable`s, `Drawer`, and more!**
+**A python library for creating beautiful GUIs in console, optimized with a Rust backend, with tons of different modules, such as `Drawer`, `Session`, `Window`s, `Widget`s, and many more!**
 
 ![PyBUD](images/pybud.gif)
 
 ---
 ## Installation:
 
-you can use pip:
+to install using pip:
 
 ```
 pip install pybud-gui -U
 ```
 
-or install from github:
+or if you want to install from source:
 
 ```
 pip install git+https://github.com/Amirali1059/pybud-gui.git
@@ -25,73 +25,113 @@ pip install git+https://github.com/Amirali1059/pybud-gui.git
 
 #### Table of Contents:
 
-- [Getting Started](#getting-started)
+- [Build Your First Window](#build-your-first-window)
 
-- [Build Your First Dialog](#build-your-first-dialog)
+- [Add Your First Widget](#add-your-first-widget)
 
-- [Colored Text In Dialogs](#colored-text-in-dialogs)
+- [Exmaples](#examples)
 
-- [Gather inputs from the user](#gather-inputs-from-the-user)
 ---
-## Getting Started
 
-Using `pybud-gui` you can build dialogs with just a few lines of code, lets get started!
+### Build Your First Window
 
-### Build Your First Dialog
-
-first import classes:
+First import moduels:
 
 ```python
-# import the main dialog class
-from pybud.gui.dialog import AutoDialog
-# import widgets
-from pybud.gui.widgets import WidgetLabel
+from pybud.session import Session
+from pybud.window import Window
 ```
 
-and build the dialog in just 3 lines of code!
+You can think of `Session` as a display monitor, the display has a refresh rate (`session.TPS`) and size (`datatypes.Size`), and can show multiple `Window`s on it.
+
+Next, build the main class:
 
 ```python
-# build the main dialog, set width and background color
-d = AutoDialog(width=60, background_color=(90, 90, 250))
-# add the main widget, set text, width and position
-d.add_widget(WidgetLabel("Hello world!", pos=[0, 1], size=[60, None]))
-# show the dialog
-d.show()
+class Main(Window):
+    def __init__(self):
+        super().__init__(
+            size = (100, 10),
+            position = (0, 0),
+            title = "Window Example",
+        )
 ```
 
-Output:
-
-> ![Build Your First Dialog](images/build-your-first-dialog.png)
-### Colored Text In Dialogs
-
-first import classes:
+And finally, show the window:
 
 ```python
-# import the main dialog class
-from pybud.gui.dialog import AutoDialog
-# import widgets
-from pybud.gui.widgets import WidgetLabel
-# import `ColoredString` (using this class you can define text with color)
-from pybud.drawer.ansi import AnsiString as AStr
-```
+# only for windows users
+import pybud.drawer.ansi as ansi
+ansi.init()
 
-and build the dialog just like above, but with `ColoredString`
-
-```python
-# build the main dialog, set width and background color
-d = AutoDialog(width=60, background_color=(90, 90, 250))
-# add a label widget, set text, width and position
-d.add_widget(WidgetLabel(
-	# define a ColoredString object that renders text with colors
-	# you can set both forecolor and backcolor
-	text=AStr("Hello world!", fore = (90, 250, 90)),
-	pos=[0, 1],
-	size=[60, None]
-	)
-)
-# show the dialog
-d.show()
+# add `Main` to session and show
+s = Session((100, 10), background=(100, 100, 250))
+s.add_window(Main())
+s.show()
 ```
 
 Output:
->![Colored Text In Dialogs](images/colored-text-in-dialogs.png)
+
+> ![Build Your First Window](images/build-your-first-window.png)
+
+### Add Your First Widget
+
+First import moduels:
+
+```python
+from pybud.session import Session
+from pybud.window import Window
+from pybud.widgets import Label
+# using `ansi` module you can define colored text with graphics
+from pybud.drawer import ansi
+```
+
+Next, build the Main class just like above, but add a `Label` widget.
+
+```python
+# build the main window
+class Main(Window):
+    def __init__(self):
+        super().__init__(
+            size = (50, 9),
+            position = (0, 0),
+            title = "Colored Text Example",
+        )
+
+        # add a label widget, set text, width and position
+        self.add_widget(Label(
+            # define a ansi.AnsiString object that renders text with colors
+            # you can set both forecolor and backcolor
+            text = ansi.AnsiString("Hello world!", fore = (90, 250, 90)),
+            position = (19, 4),
+            size = (60, 1)
+            )
+        )
+```
+
+And finally, show the window:
+
+```python
+# only for windows users
+import pybud.drawer.ansi as ansi
+ansi.init()
+
+# add `Main` to session and show
+s = Session((50, 9), background=(100, 100, 250))
+s.add_window(Main())
+s.show()
+```
+
+Output:
+>![Add Your First Widget](images/add-your-first-widget.png)
+
+### Advanced Exmaples
+
+Advanced Example 1:
+>![Advanced Example 1](images/advanced-example-1.png)
+
+Advanced Example 2:
+>![Advanced Example 2](images/advanced-example-2.png)
+
+---
+
+Written in 2025, License: `BSD 4-clause License`
