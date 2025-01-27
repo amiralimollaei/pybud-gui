@@ -18,7 +18,7 @@ pip install pybud-gui -U
 or if you want to install from source:
 
 ```
-pip install git+https://github.com/Amirali1059/pybud-gui.git
+pip install git+https://github.com/amiralimollaei/pybud-gui.git
 ```
 
 ## Documentation:
