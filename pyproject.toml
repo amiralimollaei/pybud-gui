@@ -13,7 +13,7 @@ requires-python = ">= 3.10"
 authors = [
   {name = "Amirali Mollaei", email = "me.amiralimollaei@gmail.com"},
 ]
-description = "Create beautiful console GUIs in python, using Widgets, Dialogs, and more!"
+description = "A library for creating GUIs in console, with a Rust backend, with tons of different modules, such as `Session`, `Window`s, `Widget`s, and many more!"
 license = {text = "BSD 4-clause License"}
 classifiers = [
     "Operating System :: Microsoft :: Windows",
