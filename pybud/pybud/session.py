@@ -11,14 +11,12 @@ from .datatypes import Size, Color
 
 from .callbacks import OnUpdateContext
 
-# ticks per second
-TPS = 20
-
 def get_admination_at(tick, n = 3, animation = "▁▂▃▄▅▆▆▅▄▃▂▁▂ "):
     return animation[tick % (len(animation)-n):tick % (len(animation)-n)+n]
 
 class UpdateHandler:
-    def __init__(self, update_fn):
+    def __init__(self, update_fn, tps: int = 20):
+        self.tps = tps
         self.closed = False
         self.tick = 0
 
@@ -42,16 +40,17 @@ class UpdateHandler:
         return (not self.closed) and (self.tickupdate_thread is not None) and self.tickupdate_thread.is_alive()
     
     def do_tick_updates(self):
-        frame_time = (1 / TPS)
-        
         start_time = time.time()
         self.tick = 0
         while not self.closed:
             self.update_fn(OnUpdateContext(self.tick))
 
-            schedule_ahead = (frame_time * self.tick) - (time.time() - start_time)
+            schedule_ahead = start_time + (self.tick / self.tps) - time.time()
             
-            # TODO: display a warning if were too far off the schedule
+            # if we're too far off the schedule, reset, instead of sprinting
+            if schedule_ahead > 5:
+                # TODO: display a warning
+                start_time = time.time()
 
             time.sleep(max(0, schedule_ahead))
             self.tick += 1

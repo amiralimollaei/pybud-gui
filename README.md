@@ -4,7 +4,7 @@
 
 **A python library for creating beautiful GUIs in console, optimized with a Rust backend, with tons of different modules, such as `Drawer`, `Session`, `Window`s, `Widget`s, and many more!**
 
-![PyBUD](images/pybud.gif)
+![PyBUD](https://raw.githubusercontent.com/amiralimollaei/pybud-gui/main/images/pybud.gif)
 
 ---
 
@@ -73,7 +73,7 @@ s.show()
 
 Output:
 
-> ![Build Your First Window](images/build-your-first-window.png)
+> ![Build Your First Window](https://raw.githubusercontent.com/amiralimollaei/pybud-gui/main/images/build-your-first-window.png)
 
 ### Add Your First Widget
 
@@ -124,7 +124,7 @@ s.show()
 ```
 
 Output:
->![Add Your First Widget](images/add-your-first-widget.png)
+>![Add Your First Widget](https://raw.githubusercontent.com/amiralimollaei/pybud-gui/main/images/add-your-first-widget.png)
 
 ### ComboBox Example
 
@@ -182,7 +182,7 @@ s.show()
 ```
 
 Output:
->![ComboBox Example](images/combobox-example.png)
+>![ComboBox Example](https://raw.githubusercontent.com/amiralimollaei/pybud-gui/main/images/combobox-example.png)
 
 ### Advanced Example 1
 
@@ -249,7 +249,7 @@ s.show()
 ```
 
 Output:
->![Vertical Multiple Choice Example](images/advanced-example-1.png)
+>![Vertical Multiple Choice Example](https://raw.githubusercontent.com/amiralimollaei/pybud-gui/main/images/advanced-example-1.png)
 
 ### TextBox Example
 
@@ -293,7 +293,7 @@ s.show()
 ```
 
 Output:
->![TextBox Example](images/textbox-example.png)
+>![TextBox Example](https://raw.githubusercontent.com/amiralimollaei/pybud-gui/main/images/textbox-example.png)
 
 ### Advanced Example 2
 
@@ -426,7 +426,7 @@ for i, w in enumerate(main_window._widgets):
 ```
 
 Output:
->![Advanced Example 2](images/advanced-example-2.png)
+>![Advanced Example 2](https://raw.githubusercontent.com/amiralimollaei/pybud-gui/main/images/advanced-example-2.png)
 
 ---
 
