@@ -7,23 +7,24 @@
 ![PyBUD](images/pybud.gif)
 
 ---
-## Installation:
+
+## Installation
 
 to install using pip:
 
-```
+```bash
 pip install pybud-gui -U
 ```
 
 or if you want to install from source:
 
-```
+```bash
 pip install git+https://github.com/amiralimollaei/pybud-gui.git
 ```
 
-## Documentation:
+## Documentation
 
-#### Table of Contents:
+### Table of Contents
 
 - [Build Your First Window](#build-your-first-window)
 - [Add Your First Widget](#add-your-first-widget)
