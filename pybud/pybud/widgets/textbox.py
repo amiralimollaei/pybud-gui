@@ -7,7 +7,6 @@ from ..datatypes import Size, Position
 from ..callbacks import OnDrawContext, OnKeyboardInputContext
 
 
-# TODO: refactor code
 class TextBox(InteractionWidget):
     def __init__(
         self,
@@ -29,73 +28,19 @@ class TextBox(InteractionWidget):
         # characters that this dialouge will listen to
         self.allowed_characters = allowed_chars or ""
 
-        ## keys
-        ctrl_keys = [
-            Key.CTRL_A,
-            Key.CTRL_B,
-            Key.CTRL_C,
-            Key.CTRL_D,
-            Key.CTRL_E,
-            Key.CTRL_F,
-            Key.CTRL_G,
-            Key.CTRL_H,
-            Key.CTRL_I,
-            Key.CTRL_J,
-            Key.CTRL_K,
-            Key.CTRL_L,
-            Key.CTRL_M,
-            Key.CTRL_N,
-            Key.CTRL_O,
-            Key.CTRL_P,
-            Key.CTRL_Q,
-            Key.CTRL_R,
-            Key.CTRL_S,
-            Key.CTRL_T,
-            Key.CTRL_U,
-            Key.CTRL_V,
-            Key.CTRL_W,
-            Key.CTRL_X,
-            Key.CTRL_Y,
-            Key.CTRL_Z,
-        ]
-
-        funcion_keys = [
-            Key.F1,
-            Key.F2,
-            Key.F3,
-            Key.F4,
-            Key.F5,
-            Key.F6,
-            Key.F7,
-            Key.F8,
-            Key.F9,
-            Key.F10,
-            Key.F11,
-            Key.F12,
-        ]
-
-        command_keys = [
-            Key.DOWN,
-            Key.UP,
-            Key.LEFT,
-            Key.RIGHT,
-            Key.END,
-            Key.HOME,
-            Key.ESC,
-            Key.ENTER,
-            Key.INSERT,
-            Key.LF,
-            Key.CR,
-            Key.PAGE_DOWN,
-            Key.PAGE_UP,
-            Key.SUPR,
-            Key.BACKSPACE,
-        ]
-
-        self.__ignored_keys = ctrl_keys + funcion_keys + command_keys
+        self.__ignored_keys = self._initialize_ignored_keys()
         
         self.add_callback("on_keyboard_input", self._on_keyboard_input)
 
+    def _initialize_ignored_keys(self):
+        ctrl_keys = [getattr(Key, f"CTRL_{chr(i)}") for i in range(ord('A'), ord('Z') + 1)]
+        function_keys = [getattr(Key, f"F{i}") for i in range(1, 13)]
+        command_keys = [
+            Key.DOWN, Key.UP, Key.LEFT, Key.RIGHT, Key.END, Key.HOME, Key.ESC, Key.ENTER,
+            Key.INSERT, Key.LF, Key.CR, Key.PAGE_DOWN, Key.PAGE_UP, Key.SUPR, Key.BACKSPACE
+        ]
+        return ctrl_keys + function_keys + command_keys
+    
     def reset(self):
         self.input = ""
         self.pointer = 0
@@ -144,7 +89,7 @@ class TextBox(InteractionWidget):
                 if self.view == (self.pointer-max_input_len):
                     self.view = min(self.view + 1, len(self.input))
                 context.cancel()
-        
+
 
     def format_textbox(self):
         text, inp, pointer, view = self.text, self.input, self.pointer, self.view

@@ -12,30 +12,30 @@ class Main(pb.Window):
         
         title = pb.ansi.AnsiString("PyBUD: GUI Beauty", fore = (20, 250, 120))
         title.add_graphics(pb.ansi.AnsiGraphicMode.BOLD | pb.ansi.AnsiGraphicMode.UNDERLINE)
-        
-        title = pb.ansi.AnsiString("[ ") + title + pb.ansi.AnsiString(" ]")
-
-        self.add_widget(pb.widgets.Label(
-            title,
+        self.lbl_title = pb.widgets.Label(
+            pb.ansi.AnsiString("[ ") + title + pb.ansi.AnsiString(" ]"),
             centered = True,
             size = (self.size.width - 4, 1),  # height will be owerwritten in WidgetLabel
             position = (2, 1),
-        ))
+        )
+        self.add_widget(self.lbl_title)
         
-        caption = "A python library for creating beautiful GUIs in console, with tons of diffrent components, such as Dialogs, Widgets, Drawables, ansi color optimizations written in Rust, and more!"
-        
-        self.add_widget(pb.widgets.Label(
-            caption,
+        self.lbl_caption = pb.widgets.Label(
+            "A python library for creating beautiful GUIs in console, with tons of diffrent components, such as Dialogs, Widgets, Drawables, ansi color optimizations written in Rust, and more!",
             centered = True,
             size = (self.size.width - 4, 1),  # height will be owerwritten in WidgetLabel
             position = (2, 2),
-        ))
-        self.add_widget(pb.widgets.TextBox(
+        )
+        self.add_widget(self.lbl_caption)
+        
+        self.tbox_input = pb.widgets.TextBox(
             "TextBox: ",
             size = (self.size.width//2 - 4, 1),  # height will be owerwritten in WidgetLabel
             position = (2, 6),
-        ))
-        self.add_widget(pb.widgets.ComboBox(
+        )
+        self.add_widget(self.tbox_input)
+
+        self.cbox_input = pb.widgets.ComboBox(
             "ComboBox: ",
             options = {
                 "Nice!": self.nice_option,
@@ -43,10 +43,12 @@ class Main(pb.Window):
                 "Awesome!": self.awesome_option,
                 "Briliant!": self.briliant_option,
             },
-            size = (self.size.width//2 - 4, 1),  # height will be owerwritten in WidgetLabel
+            size = (self.size.width//2 - 4, 1),  # height will be overwritten in WidgetLabel
             position = (self.size.width//2 + 2, 6),
-        ))
-        self.add_widget(pb.widgets.VerticalMultipleChoice(
+        )
+        self.add_widget(self.cbox_input)
+
+        self.vmc_input = pb.widgets.VerticalMultipleChoice(
             "VerticalMultipleChoice:",
             # the text and callback function for each option
             options = {
@@ -57,8 +59,10 @@ class Main(pb.Window):
             },
             size = (self.size.width-4, 1),  # height will be owerwritten in WidgetOptions
             position = (2, 8),
-        ))
-        self.add_widget(pb.widgets.Label(
+        )
+        self.add_widget(self.vmc_input)
+
+        self.lbl_tip = pb.widgets.Label(
             pb.ansi.AnsiString("Tip: ", fore = (255, 128, 0)) +
             pb.ansi.AnsiString("Use TAB or arrow keys to switch between Widgets, Use ") +
             pb.ansi.AnsiString("Ctrl + C", fore = (255, 128, 0)) + pb.ansi.AnsiString(" to exit the demo."),
@@ -66,7 +70,9 @@ class Main(pb.Window):
             size = (self.size.width - 26, 1),  # height will be owerwritten in WidgetLabel
             position = (22, 9),
             name = "tip-label"
-        ))
+        )
+        self.add_widget(self.lbl_tip)
+        
         self.lbl_result = pb.widgets.Label(
             "",
             centered = True,
@@ -75,28 +81,47 @@ class Main(pb.Window):
             name = "result-label"
         )
         self.add_widget(self.lbl_result)
+        
+        # resize all widgets based on the window size
+        self.on_resize(context=pb.callbacks.OnResizeContext(self.size))
 
     def briliant_option(self):
-        self.lbl_result.text = "Briliant!"
+        self.lbl_result.text = pb.ansi.AnsiString("Briliant!", fore=(255, 128, 0))
 
     def great_option(self):
-        self.lbl_result.text = "great!"
+        self.lbl_result.text = pb.ansi.AnsiString("Great!", fore=(0, 255, 128))
 
     def nice_option(self):
-        self.lbl_result.text = "Nice!"
+        self.lbl_result.text = pb.ansi.AnsiString("Nice!", fore=(255, 0, 0))
 
     def awesome_option(self):
-        self.lbl_result.text = "Awesome!"
+        self.lbl_result.text = pb.ansi.AnsiString("Awesome!", fore=(255, 255, 0))
+    
+    def on_resize(self, context: pb.callbacks.OnResizeContext):
+        self.lbl_title.size.width = context.size.width - 4
+        self.lbl_caption.size.width = context.size.width - 4
+        self.tbox_input.size.width = context.size.width//2 - 4
+        self.cbox_input.position.x = context.size.width//2 + 2
+        self.cbox_input.size.width = context.size.width//2 - 4
+        self.vmc_input.size.width = context.size.width-4
+        
+        self.lbl_result.position.y = context.size.height - 2
+        self.lbl_result.size.width = context.size.width - 4
+        
+        self.lbl_tip.position = pb.datatypes.Position(context.size.width//2 - 11, 9)
+        self.lbl_tip.size.width = context.size.width - self.lbl_tip.position.x - 4
 
 
 if __name__ == "__main__":
     # only for windows users
     pb.ansi.init()
-
+    
+    # enable experimental features (might not work in all environments)
+    pb.enable_experimental_features()
     
     # define `Session` size and `Session` background, you can think of 
     # a session as the screen display that shows the `Window`s on it.
-    s = pb.Session((76, 14), background=(90, 110, 220))
+    s = pb.Session((76, 14), background=(90, 110, 220), allow_resize=True)
     s.add_window(Main())
     s.show()
 

@@ -62,7 +62,7 @@ class ComboBox(InteractionWidget):
             if i == self.selected_option_id:
                 _option = ansi.AnsiString(
                     f" {option} ".ljust(self.size.width - len(self.text)),
-                    back = tuple(map(lambda x: round(x * 0.8), drawer.plane_color))
+                    back = tuple(map(lambda x: round(x * 0.8), drawer.plane_color)) if drawer.plane_color else None
                 )
                 _option.add_graphics(ansi.AnsiGraphicMode.UNDERLINE)
                 drawer.place(

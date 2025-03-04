@@ -1,5 +1,7 @@
 from ..drawer import Drawer
 
+from ..datatypes import Size, Position
+
 # base class for all callback contexts
 
 class CallbackContext:
@@ -54,7 +56,7 @@ class OnUpdateContext(CallbackContext):
 
 class OnDrawContext(CallbackContext):
     """
-    A child of `CallbackContext` for screens/widgets closing callback with id="on_draw".
+    A child of `CallbackContext` for screens/widgets callback with id="on_draw".
     """
 
     def __init__(self, drawer: Drawer):
@@ -64,9 +66,34 @@ class OnDrawContext(CallbackContext):
     def get_drawer(self):
         return self.drawer
 
+class OnResizeContext(CallbackContext):
+    """
+    A child of `CallbackContext` for screens/widgets callback with id="on_resize".
+    """
+
+    def __init__(self, size: Size):
+        super().__init__(id = "on_resize")
+        self.size = size
+
+    def get_drawer(self):
+        return self.size
+
+
+class OnMoveContext(CallbackContext):
+    """
+    A child of `CallbackContext` for screens/widgets callback with id="on_move".
+    """
+
+    def __init__(self, position: Position):
+        super().__init__(id = "on_move")
+        self.position = position
+
+    def get_drawer(self):
+        return self.position
+
 class OnFocusAddedContext(CallbackContext):
     """
-    A child of `CallbackContext` for screens closing callback with id="on_focus_added".
+    A child of `CallbackContext` for screens/widgets callback with id="on_focus_added".
     """
 
     def __init__(self):
@@ -75,7 +102,7 @@ class OnFocusAddedContext(CallbackContext):
 
 class OnFocusLostContext(CallbackContext):
     """
-    A child of `CallbackContext` for screens closing callback with id="on_focus_lost".
+    A child of `CallbackContext` for screens/widgets callback with id="on_focus_lost".
     """
 
     def __init__(self):
@@ -84,7 +111,7 @@ class OnFocusLostContext(CallbackContext):
 
 class OnKeyboardInputContext(CallbackContext):
     """
-    A child of `CallbackContext` for screens closing callback with id="on_keyboard_input".
+    A child of `CallbackContext` for screens/widgets callback with id="on_keyboard_input".
     """
 
     def __init__(self, key: str):

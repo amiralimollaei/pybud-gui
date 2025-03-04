@@ -27,6 +27,9 @@ class CallbackMixin:
     def add_callback(self, calllback_id: str, fn):
         self.validate_callback_id(calllback_id)
         self._callbacks[calllback_id].append(fn)
+    
+    def list_available_callbacks(self):
+        return list(self._callbacks.keys())
 
     def _run_callbacks(self, context: CallbackContext):
         if context.is_cancelled():

@@ -6,7 +6,7 @@ from .datatypes import Size, Position
 from .mixins import CallbackMixin, DepthMixin
 
 from .enums import WindowClosingReason
-from .callbacks import OnUpdateContext, OnDrawContext, OnFocusAddedContext, OnFocusLostContext
+from .callbacks import OnUpdateContext, OnDrawContext, OnMoveContext, OnResizeContext, OnFocusAddedContext, OnFocusLostContext
 from .callbacks.window import OnOpenContext, OnCloseContext
 
 from .widgets import Widget, InteractionWidget
@@ -72,8 +72,12 @@ class Window(CallbackMixin, DepthMixin):
             "on_close",
             "on_focus_added",
             "on_focus_lost",
+            "on_resize",
+            "on_move",
             "on_update"
         ])
+
+        self.add_callback("on_resize", self.on_resize)
 
     def unfocus(self):
         self.is_in_focus = False
@@ -115,6 +119,20 @@ class Window(CallbackMixin, DepthMixin):
                 min_distance = w_distance
                 chosen_widget = w
         return chosen_widget
+    
+    def resize(self, size: Size = None):
+        if size is None:
+            return
+        self.size = size
+        self.window_drawer = Drawer(
+            width = self.size.width,
+            height = self.size.height,
+            plane_color = None
+        )
+        self._run_callbacks(OnResizeContext(self.size))
+    
+    def on_resize(self):
+        pass
     
     def update(self, context: OnUpdateContext):
         if exists(context.tick):

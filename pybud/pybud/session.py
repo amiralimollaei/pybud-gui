@@ -1,4 +1,7 @@
 import time
+import os
+import warnings
+
 from threading import Thread
 
 from readchar import key as KeyPress
@@ -10,6 +13,12 @@ from .window import Window
 from .datatypes import Size, Color
 
 from .callbacks import OnUpdateContext
+
+EXPERIMENTAL_FEATURES = False
+
+def enable_experimental_features():
+    global EXPERIMENTAL_FEATURES
+    EXPERIMENTAL_FEATURES = True
 
 def get_admination_at(tick, n = 3, animation = "▁▂▃▄▅▆▆▅▄▃▂▁▂ "):
     return animation[tick % (len(animation)-n):tick % (len(animation)-n)+n]
@@ -101,8 +110,11 @@ class Session:
         self.background = background
 
         if allow_resize:
-            raise NotImplementedError("`allow_resize` is not yet implemented but will be released in a future update.")
-
+            if EXPERIMENTAL_FEATURES:
+                warnings.warn("`allow_resize` is experimental and might be changed in a future update.")
+            else:
+                raise NotImplementedError("`allow_resize` is not yet stable but will be added in a future update, to use unstable features add `pybud.enable_experimental_features()` to the start of your code.")
+        
         self.allow_resize = allow_resize
         
         self.color_mode = color.ColorMode.TRUECOLOR if color_mode is None else color_mode
@@ -137,19 +149,48 @@ class Session:
             else:
                 window.unfocus()
 
+    def __enable_draw_mode(self):
+        if EXPERIMENTAL_FEATURES:
+            print("\033[?1049h\033[?25l", end="")
+        
+    def __disable_draw_mode(self):
+        if EXPERIMENTAL_FEATURES:
+            print("\033[?1049l\033[?25h", end="")
+    
     def show(self):
+        self.__enable_draw_mode()
         for window in self.window_buffer:
             window.open()
         self.update_handler.start()
         while self.update_handler.is_running():
             time.sleep(0.01)
+        self.__disable_draw_mode()
 
     def close(self):
         print(("\r" + (" " * self.size.width) + "\n") * (self.size.height) , end="")
         print(f"\033[{self.size.height}F", end="")
         self.update_handler.stop()
 
+    def __resize_to_terminal_size(self):
+        if EXPERIMENTAL_FEATURES:
+            self.resize(Size(*os.get_terminal_size()))
+    
+    def resize(self, size = None):
+        if size is None:
+            size = self.size
+        if not isinstance(size, (Size, tuple)):
+            raise TypeError(
+                f"Expected size to be of type `datatypes.Size` or `tuple[int, int]` but got {type(size)}."
+            )
+        if isinstance(size, tuple):
+            size = Size(*size)
+        self.size = size
+        self.drawer = Drawer(width=size.width, height=size.height, plane_color=self.background.get_rgb())
+        for window in self.window_buffer:
+            window.resize(size)
+    
     def update(self, context: OnUpdateContext):
+        self.__resize_to_terminal_size()
         for window in reversed(self.window_buffer):
             if window.is_in_focus:
                 window.update(context)

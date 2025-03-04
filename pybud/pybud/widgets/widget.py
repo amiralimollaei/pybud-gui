@@ -2,7 +2,8 @@ from ..drawer import Drawer
 
 from ..mixins import CallbackMixin, DepthMixin
 
-from ..callbacks import OnUpdateContext, OnDrawContext, OnKeyboardInputContext, OnFocusAddedContext, OnFocusLostContext
+from ..callbacks import ( OnUpdateContext, OnDrawContext, OnResizeContext, OnMoveContext,
+                         OnKeyboardInputContext, OnFocusAddedContext, OnFocusLostContext )
 from ..callbacks.widgets import OnInitContext
 
 from ..datatypes import Size, Position, Point
@@ -34,11 +35,13 @@ class Widget(CallbackMixin, DepthMixin):
         # holds all callbacks based on their ids
         super().__init__([
             "on_draw",
+            "on_move",
             "on_init",
             "on_update",
             "on_keyboard_input",
         ])
         self.add_callback("on_draw", self.on_draw)
+        self.add_callback("on_move", self.on_move)
         
         self._run_callbacks(OnInitContext())
 
@@ -55,6 +58,15 @@ class Widget(CallbackMixin, DepthMixin):
         self._run_callbacks(OnDrawContext(drawer))
 
     def on_draw(self, context = OnDrawContext):
+        pass
+    
+    def move(self, position: Position = None):
+        if position is None:
+            return
+        self.position = position
+        self._run_callbacks(OnMoveContext(position=self.position))
+    
+    def on_move(self, context = OnMoveContext):
         pass
 
     def update(self, context: OnUpdateContext):
@@ -76,6 +88,7 @@ class InteractionWidget(Widget):
 
         self.focused = False
         
+        # extend callbacks
         super(Widget, self)._init_callbacks([
             "on_focus_added",
             "on_focus_lost",
