@@ -1,20 +1,86 @@
-# ignore all __pycache__ directories
-**/__pycache__
-# ignore all .cache directories
-**/.cache
-# ignore all .vscode directories
-**/.vscode
-# ignore all *.egg-info directories
-**/*.egg-info
+# Byte-compiled / optimized / DLL files
+__pycache__/
+.pytest_cache/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+.venv/
+env/
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+include/
+man/
+venv/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+pip-selfcheck.json
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Rope
+.ropeproject
+
+# Django stuff:
+*.log
+*.pot
+
+.DS_Store
+
+# Sphinx documentation
+docs/_build/
+
+# PyCharm
+.idea/
+
+# VSCode
+.vscode/
+
+# Pyenv
+.python-version
+
+
 # ignore all test python files
 **/test-*.py
 **/test*.py
 **/*test.py
 **/*-test.py
+
 # ignore dist, build and target directories
 **/dist
 **/build
 **/target
+
 # ignore all .whl files
 **/*.whl
 **/wheels
