@@ -19,6 +19,8 @@ jobs:
         platform: [
           { os: "macos-latest", python-architecture: "arm64", rust-target: "aarch64-apple-darwin" },
           { os: "ubuntu-latest", python-architecture: "x64", rust-target: "x86_64-unknown-linux-gnu" },
+          { os: "ubuntu-latest", python-architecture: "armv7l", rust-target: "armv7-unknown-linux-gnueabihf" },
+          { os: "ubuntu-latest", python-architecture: "armv8", rust-target: "aarch64-unknown-linux-gnu" },
           { os: "windows-latest", python-architecture: "x64", rust-target: "x86_64-pc-windows-msvc" },
           { os: "windows-latest", python-architecture: "x86", rust-target: "i686-pc-windows-msvc" }
         ]
@@ -104,6 +106,8 @@ jobs:
         platform: [
           { os: "macos-latest", python-architecture: "arm64", rust-target: "aarch64-apple-darwin" },
           { os: "ubuntu-latest", python-architecture: "x64", rust-target: "x86_64-unknown-linux-gnu" },
+          { os: "ubuntu-latest", python-architecture: "armv7l", rust-target: "armv7-unknown-linux-gnueabihf" },
+          { os: "ubuntu-latest", python-architecture: "armv8", rust-target: "aarch64-unknown-linux-gnu" },
           { os: "windows-latest", python-architecture: "x64", rust-target: "x86_64-pc-windows-msvc" },
           { os: "windows-latest", python-architecture: "x86", rust-target: "i686-pc-windows-msvc" }
         ]
